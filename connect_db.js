@@ -22,4 +22,4 @@ function connectDB(callback) {
   })
 }
 
-export default connectDB;
+export default connectDB

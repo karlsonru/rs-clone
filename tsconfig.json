@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+
+    "sourceMap": true,
+    "watch": true,
+
+    "allowSyntheticDefaultImports": true,
+    /*"noImplicitAny": true,*/
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "./dist",
+    /*"pretty": true,*/
+    "strict": true,
+    "declaration": false,
+    "lib": [
+      "es2021",
+      "DOM", 
+    ],
+  },
+   "include": ["./"],
+   "exclude": ["node_modules"],
+}

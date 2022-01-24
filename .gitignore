@@ -1,2 +1,3 @@
 node_modules
 skiru_parser.py
+.src/*.js

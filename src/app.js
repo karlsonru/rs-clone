@@ -73,7 +73,18 @@ app.get('/resorts', function (req, res) {
             switch (_a.label) {
                 case 0:
                     console.log('========= ЗАПРОС =========');
-                    query = req.query;
+                    // query = req.query;
+                    query = { $and: [
+                        { $or: [{country: { $ne: null }}] },
+                        { rate: {$gte : 4.8} },
+                    ]}
+                    // если указаны фильтры на подъемники
+                    let obj = {total: 50, gondola: true, chairlift: true};
+                    for (let i in obj) {
+                        // для подъемников total - добавляем >= переданному значению, для определённых типов - просто их наличие 
+                      query.$and.push( {[`cabel.${i}`]:  (i == 'total') ? {$gte: obj[i]}  : {$gte: 0} } );
+                      console.log(obj[i]);
+                    }
                     console.log(query);
                     return [4 /*yield*/, makeQuery("resorts_list", query)];
                 case 1:

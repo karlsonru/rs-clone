@@ -8,29 +8,29 @@ interface IDatabase {
 // Добавить интерфейс user
 // Добавить интерфейс курорта
 
-export default class DatabaseRequests implements IDatabase {
-  private database;
-
-  constructor(database: MongoClient["db"]) {
-    this.database = database;
+// класс для управления запросами к базе данных
+export default class DatabaseRequests {
+  constructor(db: MongoClient["db"]) {
+    this.database = db;
   }
   
   // добавляем одну сущеность в базу данных
   async uploadOne(collectionName: string, data: object) {
-    let result = await this.database[collectionName].insertOne(data);
+    let result = await this.database.collection(collectionName).insertOne(data);
     return result; 
   }
   
   
-  async findOne(query: object) {
-    let result = await this.database[collectionName].findOne(query);
+  // ищем одну запись в коллекции
+  async findOne(collectionName: string, query: object) {
+    let result = await this.database.collection(collectionName).findOne(query);
     return result;
   }
 
-  async findMany(query: object) {
-    let result = this.collection.find(query);
-    let collection = await result;
-    return collection.toArray();
+  // ищем все записи по запросу в коллекции
+  async findMany(collectionName: string, query: object) {
+    const result = this.database.collection(collectionName).find(query);
+    return result.toArray();
   }
 
   async updateOne(id, data) {}

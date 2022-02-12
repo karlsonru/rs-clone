@@ -57,8 +57,17 @@ class MongoQueryCreator {
     return mongoRequest;
   }
 
-  createUserQuery(clientQuery: Express.Request.query | Express.Request.body): object {
-    return clientQuery;
+  // запрос на создание пользователя
+  createNewUserQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+    const mongoRequest = {
+      login: clientQuery.login,
+      email: clientQuery.email,
+      pwd: clientQuery.pwd,
+      favorite: [],
+      pastTrips: [],
+      futureTrips: []
+    } 
+    return mongoRequest;
   } 
 }
 

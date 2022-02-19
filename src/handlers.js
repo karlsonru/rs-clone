@@ -100,18 +100,29 @@ function Handlers(application, database) {
     // Обработка запроса на создание нового пользователя
     app.put('/user', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, mongoQuery, result, json;
+            var request, validateRequest, isNotUnique, reply, json, mongoQuery, result, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         request = req.body;
+                        validateRequest = queryCreator.checkNewUserQuery(request);
+                        return [4 /*yield*/, databaseRequests.findOne("users_list", validateRequest)];
+                    case 1:
+                        isNotUnique = _a.sent();
+                        if (!isNotUnique) return [3 /*break*/, 2];
+                        reply = 'Пользователем с таким логином или адресом электронной почты уже зарегистрирован';
+                        json = JSON.stringify(reply);
+                        res.json(json);
+                        return [3 /*break*/, 4];
+                    case 2:
                         mongoQuery = queryCreator.createNewUserQuery(request);
                         return [4 /*yield*/, databaseRequests.uploadOne("users_list", mongoQuery)];
-                    case 1:
+                    case 3:
                         result = _a.sent();
                         json = JSON.stringify(result);
                         res.json(json);
-                        return [2 /*return*/];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });

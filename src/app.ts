@@ -3,21 +3,15 @@ import helmet from 'helmet';
 
 const app = express();
 
+app.use(express.json());
+
 app.use(  
   helmet.contentSecurityPolicy({
     useDefaults: false,
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: ["'self'"],    
     }
   })
 );
-/*
-app.use(  
-  helmet({
-    contentSecurityPolicy: false,
-  })
-);
-*/
-app.use(express.json());  
-  
+     
 export default app;

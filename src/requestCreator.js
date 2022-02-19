@@ -60,6 +60,23 @@ var MongoQueryCreator = /** @class */ (function () {
         }
         return mongoRequest;
     };
+    // проверка на наличие дублей в базе (пользователя с таким же логином или почтой)
+    MongoQueryCreator.prototype.checkNewUserQuery = function (clientQuery) {
+        var mongoRequest;
+        if (clientQuery.login && clientQuery.email) {
+            mongoRequest = { $or: [{ email: clientQuery.email }, { login: clientQuery.login }] };
+        }
+        else if (clientQuery.email) {
+            mongoRequest = { email: clientQuery.email };
+        }
+        else if (clientQuery.login) {
+            mongoRequest = { login: clientQuery.login };
+        }
+        // Если не удалось составить запрос
+        if (!(mongoRequest))
+            new Error('Ошибка при создании запроса к базе данных!');
+        return mongoRequest;
+    };
     // запрос на создание пользователя
     MongoQueryCreator.prototype.createNewUserQuery = function (clientQuery) {
         var mongoRequest = {
@@ -68,7 +85,8 @@ var MongoQueryCreator = /** @class */ (function () {
             pwd: clientQuery.pwd,
             favorite: [],
             pastTrips: [],
-            futureTrips: []
+            futureTrips: [],
+            feedback: []
         };
         return mongoRequest;
     };

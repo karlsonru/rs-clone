@@ -60,7 +60,7 @@ class MongoQueryCreator {
   }
 
   // проверка на наличие дублей в базе (пользователя с таким же логином или почтой)
-  checkNewUserQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+  findUserQuery(clientQuery: Express.Request.query | Express.Request.body): object {
     let mongoRequest;
 
     if (clientQuery.login && clientQuery.email) {
@@ -76,7 +76,7 @@ class MongoQueryCreator {
 
     return mongoRequest;
   }
-
+  
   // запрос на создание пользователя
   createNewUserQuery(clientQuery: Express.Request.query | Express.Request.body): object {
     const mongoRequest = {

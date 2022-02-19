@@ -26,25 +26,53 @@ export default function Handlers(application, database) {
 
   // Обработка POST запроса с авторизацией для пользователя 
   app.post('/user', async function(req: Express.Request, res: Express.Response): Promise<void> {
-    // добавить проверку что заполнено минимум 2 поля (логин / email + pwd)
-
     const request = req.body;
-    const result = await databaseRequests.findOne("users_list", request);
+
+    try {
+      // проверяем обязательные поля - login / email && pwd
+      if (!(request.login || request.email) || !request.pwd) {
+        const json = JSON.stringify(`Не указаны обязательные параметры в запросе`);
+        res.json(json);  
+        return;
+      }
+    } catch (e) {
+      const json = JSON.stringify(`Не удалось обработать запрос`);
+      res.json(json);  
+      return;    
+    }
+
+    // создаём запрос для поиска пользователя
+    const userQuery = queryCreator.findUserQuery(request);
+    const result = await databaseRequests.findOne("users_list", userQuery);
+
+    // если пользователь не найден 
+    if (!result) {
+      const json = JSON.stringify('Пользователь не найден');
+      res.json(json);  
+      return;
+    }
+
+    // проверяем пароль у найденного пользователя и переданный в запросе
+    if (request.pwd !== result.pwd) {
+      const json = JSON.stringify('Неверный пароль');
+      res.json(json);  
+      return;
+    }
+
     const json = JSON.stringify(result);
     res.json(json);
   });
 
   // Обработка запроса на создание нового пользователя
   app.put('/user', async function(req: Express.Request, res: Express.Response): Promise<void> {
-     const request = req.body;
+    const request = req.body;
 
     // проверяем, есть ли такой email / login в базе данных уже
-    const validateRequest = queryCreator.checkNewUserQuery(request);
-    const isNotUnique = await databaseRequests.findOne("users_list", validateRequest);
+    const userQuery = queryCreator.findUserQuery(request);
+    const isNotUnique = await databaseRequests.findOne("users_list", userQuery);
 
     if (isNotUnique) {
-      const reply = 'Пользователем с таким логином или адресом электронной почты уже зарегистрирован';
-      const json = JSON.stringify(reply);
+      const json = JSON.stringify('Пользователем с таким логином или адресом электронной почты уже зарегистрирован');
       res.json(json);
     } else {
       const mongoQuery = queryCreator.createNewUserQuery(request);
@@ -53,4 +81,14 @@ export default function Handlers(application, database) {
       res.json(json);
     }
   });
+
+  // запрос списка поездок с фильтрами
+  app.post('/trips', async function(req: Express.Request, res: Express.Response): Promise<void> {
+    const request = req.body;
+  });
+
+  // создание новой поездки
+  app.put('/trips', async function(req: Express.Request, res: Express.Response): Promise<void> {
+    const request = req.body;
+  })
 }

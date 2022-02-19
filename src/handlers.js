@@ -82,14 +82,40 @@ function Handlers(application, database) {
     // Обработка POST запроса с авторизацией для пользователя 
     app.post('/user', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, result, json;
+            var request, json_1, json_2, userQuery, result, json_3, json_4, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         request = req.body;
-                        return [4 /*yield*/, databaseRequests.findOne("users_list", request)];
+                        try {
+                            // проверяем обязательные поля - login / email && pwd
+                            if (!(request.login || request.email) || !request.pwd) {
+                                json_1 = JSON.stringify("\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u044B \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u043F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u044B \u0432 \u0437\u0430\u043F\u0440\u043E\u0441\u0435");
+                                res.json(json_1);
+                                return [2 /*return*/];
+                            }
+                        }
+                        catch (e) {
+                            json_2 = JSON.stringify("\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043E\u0431\u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u0437\u0430\u043F\u0440\u043E\u0441");
+                            res.json(json_2);
+                            return [2 /*return*/];
+                        }
+                        userQuery = queryCreator.findUserQuery(request);
+                        return [4 /*yield*/, databaseRequests.findOne("users_list", userQuery)];
                     case 1:
                         result = _a.sent();
+                        // если пользователь не найден 
+                        if (!result) {
+                            json_3 = JSON.stringify('Пользователь не найден');
+                            res.json(json_3);
+                            return [2 /*return*/];
+                        }
+                        // проверяем пароль у найденного пользователя и переданный в запросе
+                        if (request.pwd !== result.pwd) {
+                            json_4 = JSON.stringify('Неверный пароль');
+                            res.json(json_4);
+                            return [2 /*return*/];
+                        }
                         json = JSON.stringify(result);
                         res.json(json);
                         return [2 /*return*/];
@@ -100,18 +126,17 @@ function Handlers(application, database) {
     // Обработка запроса на создание нового пользователя
     app.put('/user', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, validateRequest, isNotUnique, reply, json, mongoQuery, result, json;
+            var request, userQuery, isNotUnique, json, mongoQuery, result, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         request = req.body;
-                        validateRequest = queryCreator.checkNewUserQuery(request);
-                        return [4 /*yield*/, databaseRequests.findOne("users_list", validateRequest)];
+                        userQuery = queryCreator.findUserQuery(request);
+                        return [4 /*yield*/, databaseRequests.findOne("users_list", userQuery)];
                     case 1:
                         isNotUnique = _a.sent();
                         if (!isNotUnique) return [3 /*break*/, 2];
-                        reply = 'Пользователем с таким логином или адресом электронной почты уже зарегистрирован';
-                        json = JSON.stringify(reply);
+                        json = JSON.stringify('Пользователем с таким логином или адресом электронной почты уже зарегистрирован');
                         res.json(json);
                         return [3 /*break*/, 4];
                     case 2:
@@ -124,6 +149,26 @@ function Handlers(application, database) {
                         _a.label = 4;
                     case 4: return [2 /*return*/];
                 }
+            });
+        });
+    });
+    // запрос списка поездок с фильтрами
+    app.post('/trips', function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request;
+            return __generator(this, function (_a) {
+                request = req.body;
+                return [2 /*return*/];
+            });
+        });
+    });
+    // создание новой поездки
+    app.put('/trips', function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request;
+            return __generator(this, function (_a) {
+                request = req.body;
+                return [2 /*return*/];
             });
         });
     });

@@ -61,7 +61,7 @@ var MongoQueryCreator = /** @class */ (function () {
         return mongoRequest;
     };
     // проверка на наличие дублей в базе (пользователя с таким же логином или почтой)
-    MongoQueryCreator.prototype.checkNewUserQuery = function (clientQuery) {
+    MongoQueryCreator.prototype.findUserQuery = function (clientQuery) {
         var mongoRequest;
         if (clientQuery.login && clientQuery.email) {
             mongoRequest = { $or: [{ email: clientQuery.email }, { login: clientQuery.login }] };
@@ -73,7 +73,7 @@ var MongoQueryCreator = /** @class */ (function () {
             mongoRequest = { login: clientQuery.login };
         }
         // Если не удалось составить запрос
-        if (!(mongoRequest))
+        if (!mongoRequest)
             new Error('Ошибка при создании запроса к базе данных!');
         return mongoRequest;
     };

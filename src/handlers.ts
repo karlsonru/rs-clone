@@ -18,7 +18,7 @@ export default function Handlers(application, database) {
   // обработка POST запроса на курорты с фильтрами в body
   app.post('/resorts', async function(req: Express.Request, res: Express.Response): Promise<void> {
     const request = req.body;
-    const mongoQuery = queryCreator.createResortQuery(request);
+    const mongoQuery = queryCreator.findResortQuery(request);
     const result = await databaseRequests.findMany("resorts_list", mongoQuery);
     const json = JSON.stringify(result);
     res.json(json);
@@ -85,10 +85,28 @@ export default function Handlers(application, database) {
   // запрос списка поездок с фильтрами
   app.post('/trips', async function(req: Express.Request, res: Express.Response): Promise<void> {
     const request = req.body;
+    const mongoQuery = queryCreator.findTripQuery(request);
+    const result = await databaseRequests.findMany("trips", mongoQuery);
+    const json = JSON.stringify(result);
+    res.json(json);
   });
 
   // создание новой поездки
   app.put('/trips', async function(req: Express.Request, res: Express.Response): Promise<void> {
     const request = req.body;
+
+    // проверяем нет ли поездки с таким именем
+    const isNotUnique = await databaseRequests.findOne("trips", {trip_name: request.trip_name, resort_name: request.resort_name} );
+
+    if (isNotUnique) {
+      const json = JSON.stringify('Поездка с таким названием на этот курорт уже существует');
+      res.json(json);
+    } else {
+      // добавляем по умолчанию характеристику с участниками
+      let mongoQuery = queryCreator.createNewTripQuery(request);
+      const result = await databaseRequests.uploadOne("trips", mongoQuery);
+      const json = JSON.stringify(result);
+      res.json(json);
+    }
   })
 }

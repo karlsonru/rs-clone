@@ -19,7 +19,7 @@ import { request } from "express";
 
 class MongoQueryCreator {
   // создаём запрос к курортам
-  createResortQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+  findResortQuery(clientQuery: Express.Request.query | Express.Request.body): object {
     const mongoRequest = {
       $and: [],
     };
@@ -28,7 +28,7 @@ class MongoQueryCreator {
     if (clientQuery.country) {
       // добавляем в запрос проверку ИЛИ на страну
       mongoRequest.$and.push(
-        { $or: [...clientQuery.country.map(val => Object.create({}, {'country': {value: val}}) )] },
+        { 'country': { $in: [...clientQuery.country] }} 
     )}
   
     // если указаны фильтры на трассы
@@ -90,6 +90,63 @@ class MongoQueryCreator {
     } 
     return mongoRequest;
   } 
+
+  createNewTripQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+    const mongoQuery = clientQuery;
+    mongoQuery.participants = [clientQuery.started_user_id];
+    
+    return mongoQuery;
+  }
+
+  findTripQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+    const mongoRequest = {
+      $and: [],
+    };
+
+    // добавляем страну в запрос
+    if (clientQuery.country) {
+      mongoRequest.$and.push(
+        {'country': { $in: [...clientQuery.country] }}
+      )
+    }
+
+    // добавляем название курорта в запрос
+    if (clientQuery.resort_name) {
+      mongoRequest.$and.push({
+        'resort_name': clientQuery.resort_name
+      })
+    }
+
+    // добавляем дату начала поездки
+    if (clientQuery.start_date) {
+      mongoRequest.$and.push({
+          'start_date': {$gte: clientQuery.start_date}
+      })
+    }
+
+    // добавляем окончания поездки
+    if (clientQuery.end_date) {
+      mongoRequest.$and.push({
+        'end_date': {$lte: clientQuery.end_date}
+      })
+    }
+    
+    // добавляем id создавшего пользователя
+    if (clientQuery.started_user_id) {
+      mongoRequest.$and.push({
+        'started_user_id': clientQuery.started_user_id
+      })
+    }
+
+    // добавляем имя создавшего пользователя
+    if (clientQuery.started_user_name) {
+      mongoRequest.$and.push({
+        'started_user_name': clientQuery.started_user_name
+      })
+    }
+    
+    return mongoRequest;
+  }
 }
 
 export { MongoQueryCreator }

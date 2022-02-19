@@ -68,7 +68,7 @@ function Handlers(application, database) {
                 switch (_a.label) {
                     case 0:
                         request = req.body;
-                        mongoQuery = queryCreator.createResortQuery(request);
+                        mongoQuery = queryCreator.findResortQuery(request);
                         return [4 /*yield*/, databaseRequests.findMany("resorts_list", mongoQuery)];
                     case 1:
                         result = _a.sent();
@@ -155,20 +155,47 @@ function Handlers(application, database) {
     // запрос списка поездок с фильтрами
     app.post('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request;
+            var request, mongoQuery, result, json;
             return __generator(this, function (_a) {
-                request = req.body;
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        request = req.body;
+                        mongoQuery = queryCreator.findTripQuery(request);
+                        return [4 /*yield*/, databaseRequests.findMany("trips", mongoQuery)];
+                    case 1:
+                        result = _a.sent();
+                        json = JSON.stringify(result);
+                        res.json(json);
+                        return [2 /*return*/];
+                }
             });
         });
     });
     // создание новой поездки
     app.put('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request;
+            var request, isNotUnique, json, mongoQuery, result, json;
             return __generator(this, function (_a) {
-                request = req.body;
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        request = req.body;
+                        return [4 /*yield*/, databaseRequests.findOne("trips", { trip_name: request.trip_name, resort_name: request.resort_name })];
+                    case 1:
+                        isNotUnique = _a.sent();
+                        if (!isNotUnique) return [3 /*break*/, 2];
+                        json = JSON.stringify('Поездка с таким названием на этот курорт уже существует');
+                        res.json(json);
+                        return [3 /*break*/, 4];
+                    case 2:
+                        mongoQuery = queryCreator.createNewTripQuery(request);
+                        return [4 /*yield*/, databaseRequests.uploadOne("trips", mongoQuery)];
+                    case 3:
+                        result = _a.sent();
+                        json = JSON.stringify(result);
+                        res.json(json);
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
             });
         });
     });

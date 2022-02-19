@@ -30,7 +30,7 @@ var MongoQueryCreator = /** @class */ (function () {
     function MongoQueryCreator() {
     }
     // создаём запрос к курортам
-    MongoQueryCreator.prototype.createResortQuery = function (clientQuery) {
+    MongoQueryCreator.prototype.findResortQuery = function (clientQuery) {
         var _a, _b;
         var mongoRequest = {
             $and: []
@@ -38,7 +38,7 @@ var MongoQueryCreator = /** @class */ (function () {
         // если передана страна
         if (clientQuery.country) {
             // добавляем в запрос проверку ИЛИ на страну
-            mongoRequest.$and.push({ $or: __spreadArray([], clientQuery.country.map(function (val) { return Object.create({}, { 'country': { value: val } }); }), true) });
+            mongoRequest.$and.push({ 'country': { $in: __spreadArray([], clientQuery.country, true) } });
         }
         // если указаны фильтры на трассы
         if (clientQuery.slopes) {
@@ -88,6 +88,53 @@ var MongoQueryCreator = /** @class */ (function () {
             futureTrips: [],
             feedback: []
         };
+        return mongoRequest;
+    };
+    MongoQueryCreator.prototype.createNewTripQuery = function (clientQuery) {
+        var mongoQuery = clientQuery;
+        mongoQuery.participants = [clientQuery.started_user_id];
+        return mongoQuery;
+    };
+    MongoQueryCreator.prototype.findTripQuery = function (clientQuery) {
+        var mongoRequest = {
+            $and: []
+        };
+        console.log('Полученный запрос');
+        console.log(clientQuery);
+        // добавляем страну в запрос
+        if (clientQuery.country) {
+            mongoRequest.$and.push({ 'country': { $in: __spreadArray([], clientQuery.country, true) } });
+        }
+        // добавляем название курорта в запрос
+        if (clientQuery.resort_name) {
+            mongoRequest.$and.push({
+                'resort_name': clientQuery.resort_name
+            });
+        }
+        // добавляем дату начала поездки
+        if (clientQuery.start_date) {
+            mongoRequest.$and.push({
+                'start_date': { $gte: clientQuery.start_date }
+            });
+        }
+        // добавляем окончания поездки
+        if (clientQuery.end_date) {
+            mongoRequest.$and.push({
+                'end_date': { $lte: clientQuery.end_date }
+            });
+        }
+        // добавляем id создавшего пользователя
+        if (clientQuery.started_user_id) {
+            mongoRequest.$and.push({
+                'started_user_id': clientQuery.started_user_id
+            });
+        }
+        // добавляем имя создавшего пользователя
+        if (clientQuery.started_user_name) {
+            mongoRequest.$and.push({
+                'started_user_name': clientQuery.started_user_name
+            });
+        }
         return mongoRequest;
     };
     return MongoQueryCreator;

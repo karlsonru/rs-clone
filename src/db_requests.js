@@ -36,6 +36,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+var mongodb_1 = require("mongodb");
+//const MongoCli = new MongoClient();
+// интерфес класса соединения с коллекцией
 // Добавить интерфейс user
 // Добавить интерфейс курорта
 // класс для управления запросами к базе данных
@@ -63,7 +66,11 @@ var DatabaseRequests = /** @class */ (function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.database.collection(collectionName).findOne(query)];
+                    case 0:
+                        // если передан внутренний ID, то преобразуем в запрос по внутреннему ID базы данных
+                        if (query._id)
+                            query = { '_id': (0, mongodb_1.ObjectId)(query._id) };
+                        return [4 /*yield*/, this.database.collection(collectionName).findOne(query)];
                     case 1:
                         result = _a.sent();
                         return [2 /*return*/, result];
@@ -86,10 +93,14 @@ var DatabaseRequests = /** @class */ (function () {
             return [2 /*return*/];
         }); });
     };
-    DatabaseRequests.prototype.removeOne = function (id) {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2 /*return*/];
-        }); });
+    DatabaseRequests.prototype.deleteOne = function (collectionName, id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                result = this.database.collection(collectionName).deleteOne({ '_id': (0, mongodb_1.ObjectId)(id) });
+                return [2 /*return*/, result];
+            });
+        });
     };
     return DatabaseRequests;
 }());

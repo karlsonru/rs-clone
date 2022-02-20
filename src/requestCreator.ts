@@ -1,20 +1,3 @@
-/*
-country: [],
-slopes: {
-  total: num,
-  black: boolean,
-  red: boolean,
-  green: boolean,
-},
-cabel: {
-  total: boolean,
-  gondola: boolean,
-  bugel: boolean,
-  chairlift: boolean,
-},
-rate: num,
-*/
-
 import { request } from "express";
 
 class MongoQueryCreator {

@@ -1,20 +1,4 @@
 "use strict";
-/*
-country: [],
-slopes: {
-  total: num,
-  black: boolean,
-  red: boolean,
-  green: boolean,
-},
-cabel: {
-  total: boolean,
-  gondola: boolean,
-  bugel: boolean,
-  chairlift: boolean,
-},
-rate: num,
-*/
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -99,8 +83,6 @@ var MongoQueryCreator = /** @class */ (function () {
         var mongoRequest = {
             $and: []
         };
-        console.log('Полученный запрос');
-        console.log(clientQuery);
         // добавляем страну в запрос
         if (clientQuery.country) {
             mongoRequest.$and.push({ 'country': { $in: __spreadArray([], clientQuery.country, true) } });

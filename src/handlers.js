@@ -199,5 +199,52 @@ function Handlers(application, database) {
             });
         });
     });
+    // удаление созданной поездки 
+    app["delete"]('/trips', function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, request, trip, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, 4, 5]);
+                        request = req.body;
+                        // проверяем переданы ли обязательные параметры
+                        if (!request.requested_user_id || !request.trip_id) {
+                            res.status(400);
+                            throw 'Не указаны обязательные параметры запроса';
+                        }
+                        return [4 /*yield*/, databaseRequests.findOne('trips', { '_id': request.trip_id })];
+                    case 1:
+                        trip = _a.sent();
+                        // сообщаем если не найдена
+                        if (!trip) {
+                            res.status(404);
+                            throw 'Поездка не найдена';
+                        }
+                        // если удалять поездку решил не создававший её пользователь - сообщаем об ошибке
+                        if (trip.started_user_id != request.requested_user_id) {
+                            res.status(403);
+                            throw 'Недостаточно прав для запрошенного действия';
+                        }
+                        return [4 /*yield*/, databaseRequests.deleteOne("trips", request.trip_id)];
+                    case 2:
+                        // если всё ок - удаляем запись из БД и возвращаем результат 
+                        result = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        e_1 = _a.sent();
+                        result = e_1.name || e_1;
+                        if (![400, 403, 404].some(function (code) { return code == res.statusCode; }))
+                            res.status(500);
+                        return [3 /*break*/, 5];
+                    case 4:
+                        result = JSON.stringify(result);
+                        res.json(result);
+                        return [7 /*endfinally*/];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    });
 }
 exports["default"] = Handlers;

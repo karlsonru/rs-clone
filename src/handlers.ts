@@ -1,5 +1,6 @@
 import { MongoQueryCreator } from "./requestCreator";
 import DatabaseRequests from "./db_requests";
+import { ObjectId } from "mongodb";
 
 const queryCreator = new MongoQueryCreator;
 
@@ -109,4 +110,42 @@ export default function Handlers(application, database) {
       res.json(json);
     }
   })
+
+  // удаление созданной поездки 
+  app.delete('/trips', async function(req, res) {
+    let result;
+    try {
+      const request = req.body;
+
+      // проверяем переданы ли обязательные параметры
+      if (!request.requested_user_id || !request.trip_id) {
+        res.status(400);
+        throw 'Не указаны обязательные параметры запроса';
+      }
+
+      // ищем саму поездку
+      let trip = await databaseRequests.findOne('trips', {'_id': request.trip_id});
+
+      // сообщаем если не найдена
+      if (!trip) {
+        res.status(404);
+        throw 'Поездка не найдена';
+      }
+
+      // если удалять поездку решил не создававший её пользователь - сообщаем об ошибке
+      if (trip.started_user_id != request.requested_user_id) {
+        res.status(403);
+        throw 'Недостаточно прав для запрошенного действия';
+      }
+
+      // если всё ок - удаляем запись из БД и возвращаем результат 
+      result = await databaseRequests.deleteOne("trips", request.trip_id);
+    } catch(e) {
+      result = e.name || e;
+      if (![400,403,404].some(code => code == res.statusCode)) res.status(500);
+    } finally {
+      result = JSON.stringify(result);
+      res.json(result);
+    }
+  });
 }

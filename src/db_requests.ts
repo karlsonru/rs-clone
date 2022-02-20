@@ -1,16 +1,13 @@
-import { MongoClient } from "mongodb"; 
+import { MongoClient, ObjectId } from "mongodb"; 
+//const MongoCli = new MongoClient();
 
 // интерфес класса соединения с коллекцией
-interface IDatabase {
-  database: MongoClient["db"];
-}
-
 // Добавить интерфейс user
 // Добавить интерфейс курорта
 
 // класс для управления запросами к базе данных
 export default class DatabaseRequests {
-  constructor(db: MongoClient["db"]) {
+  constructor(db) {
     this.database = db;
   }
   
@@ -23,6 +20,9 @@ export default class DatabaseRequests {
   
   // ищем одну запись в коллекции
   async findOne(collectionName: string, query: object) {
+    // если передан внутренний ID, то преобразуем в запрос по внутреннему ID базы данных
+    if (query._id) query = {'_id': ObjectId(query._id) };
+
     let result = await this.database.collection(collectionName).findOne(query);
     return result;
   }
@@ -35,5 +35,8 @@ export default class DatabaseRequests {
 
   async updateOne(id, data) {}
 
-  async removeOne(id) {}
+  async deleteOne(collectionName: string, id: string) {
+    const result = this.database.collection(collectionName).deleteOne( {'_id': ObjectId(id) } );
+    return result;
+  }
 }

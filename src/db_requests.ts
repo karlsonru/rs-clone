@@ -17,7 +17,6 @@ export default class DatabaseRequests {
     return result; 
   }
   
-  
   // ищем одну запись в коллекции
   async findOne(collectionName: string, query: object) {
     // если передан внутренний ID, то преобразуем в запрос по внутреннему ID базы данных

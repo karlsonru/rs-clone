@@ -1,6 +1,5 @@
 import { MongoQueryCreator } from "./requestCreator";
 import DatabaseRequests from "./db_requests";
-import { ObjectId } from "mongodb";
 
 const queryCreator = new MongoQueryCreator;
 

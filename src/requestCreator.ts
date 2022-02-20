@@ -1,8 +1,6 @@
-import { request } from "express";
-
 class MongoQueryCreator {
   // создаём запрос к курортам
-  findResortQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+  findResortQuery(clientQuery) {
     const mongoRequest = {
       $and: [],
     };
@@ -43,7 +41,7 @@ class MongoQueryCreator {
   }
 
   // проверка на наличие дублей в базе (пользователя с таким же логином или почтой)
-  findUserQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+  findUserQuery(clientQuery) {
     let mongoRequest;
 
     if (clientQuery.login && clientQuery.email) {
@@ -61,7 +59,7 @@ class MongoQueryCreator {
   }
   
   // запрос на создание пользователя
-  createNewUserQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+  createNewUserQuery(clientQuery) {
     const mongoRequest = {
       login: clientQuery.login,
       email: clientQuery.email,
@@ -74,14 +72,14 @@ class MongoQueryCreator {
     return mongoRequest;
   } 
 
-  createNewTripQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+  createNewTripQuery(clientQuery) {
     const mongoQuery = clientQuery;
     mongoQuery.participants = [clientQuery.started_user_id];
     
     return mongoQuery;
   }
 
-  findTripQuery(clientQuery: Express.Request.query | Express.Request.body): object {
+  findTripQuery(clientQuery) {
     const mongoRequest = {
       $and: [],
     };

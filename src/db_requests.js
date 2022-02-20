@@ -37,10 +37,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var mongodb_1 = require("mongodb");
-//const MongoCli = new MongoClient();
-// интерфес класса соединения с коллекцией
-// Добавить интерфейс user
-// Добавить интерфейс курорта
 // класс для управления запросами к базе данных
 var DatabaseRequests = /** @class */ (function () {
     function DatabaseRequests(db) {
@@ -88,11 +84,12 @@ var DatabaseRequests = /** @class */ (function () {
             });
         });
     };
-    DatabaseRequests.prototype.updateOne = function (id, data) {
+    DatabaseRequests.prototype.updateOne = function (collectionName, id, query) {
         return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
             return [2 /*return*/];
         }); });
     };
+    ;
     DatabaseRequests.prototype.deleteOne = function (collectionName, id) {
         return __awaiter(this, void 0, void 0, function () {
             var result;

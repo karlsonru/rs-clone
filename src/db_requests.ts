@@ -5,20 +5,38 @@ import { MongoClient, ObjectId } from "mongodb";
 // Добавить интерфейс user
 // Добавить интерфейс курорта
 
+interface IQuery {
+  '_id'?: string;
+  'trip_name'?: string;
+  'resort_name'?: string;
+  'login'?: string; 
+  'email'?: string; 
+  'pwd'?: string; 
+  '$and'?: any[];
+}
+
+interface IDatabaseRequests {
+  uploadOne(collectionName: string, data: IQuery): Promise<{}>;
+  findOne(collectionName: string, query: IQuery): Promise<{}>;
+  findMany(collectionName: string, query: IQuery): Promise<{}>;
+  updateOne(collectionName: string, id: string, query: IQuery): Promise<void>;
+  deleteOne(collectionName: string, id: string): Promise<{}>;
+}
+
 // класс для управления запросами к базе данных
-export default class DatabaseRequests {
+export default class DatabaseRequests implements IDatabaseRequests {
   constructor(db) {
     this.database = db;
   }
   
   // добавляем одну сущеность в базу данных
-  async uploadOne(collectionName: string, data: object) {
+  async uploadOne(collectionName: string, data: IQuery): Promise<{}> {
     let result = await this.database.collection(collectionName).insertOne(data);
     return result; 
   }
   
   // ищем одну запись в коллекции
-  async findOne(collectionName: string, query: object) {
+  async findOne(collectionName: string, query: IQuery): Promise<{}> {
     // если передан внутренний ID, то преобразуем в запрос по внутреннему ID базы данных
     if (query._id) query = {'_id': ObjectId(query._id) };
 
@@ -27,14 +45,14 @@ export default class DatabaseRequests {
   }
 
   // ищем все записи по запросу в коллекции
-  async findMany(collectionName: string, query: object) {
+  async findMany(collectionName: string, query: IQuery): Promise<{}> {
     const result = this.database.collection(collectionName).find(query);
     return result.toArray();
   }
 
-  async updateOne(id, data) {}
+  async updateOne(collectionName: string, id: string, query: IQuery) {};
 
-  async deleteOne(collectionName: string, id: string) {
+  async deleteOne(collectionName: string, id: string): Promise<{}> {
     const result = this.database.collection(collectionName).deleteOne( {'_id': ObjectId(id) } );
     return result;
   }

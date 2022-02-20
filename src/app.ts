@@ -1,5 +1,6 @@
 import * as express from 'express';
 import helmet from 'helmet';
+import * as cors from 'cors';
 
 const app = express();
 
@@ -13,5 +14,7 @@ app.use(
     }
   })
 );
+
+app.use(cors());
      
 export default app;

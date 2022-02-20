@@ -45,17 +45,26 @@ function Handlers(application, database) {
     // обработка запроса на список всех курортов
     app.get('/resorts', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var query, result, json;
+            var result, query, e_1, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, 3, 4]);
                         query = req.query;
                         return [4 /*yield*/, databaseRequests.findMany("resorts_list", query)];
                     case 1:
                         result = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2:
+                        e_1 = _a.sent();
+                        result = e_1.name;
+                        res.status(500);
+                        return [3 /*break*/, 4];
+                    case 3:
                         json = JSON.stringify(result);
                         res.json(json);
-                        return [2 /*return*/];
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -63,18 +72,27 @@ function Handlers(application, database) {
     // обработка POST запроса на курорты с фильтрами в body
     app.post('/resorts', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, mongoQuery, result, json;
+            var result, request, mongoQuery, e_2, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, 3, 4]);
                         request = req.body;
                         mongoQuery = queryCreator.findResortQuery(request);
                         return [4 /*yield*/, databaseRequests.findMany("resorts_list", mongoQuery)];
                     case 1:
                         result = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2:
+                        e_2 = _a.sent();
+                        result = e_2.name;
+                        res.status(500);
+                        return [3 /*break*/, 4];
+                    case 3:
                         json = JSON.stringify(result);
                         res.json(json);
-                        return [2 /*return*/];
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -82,23 +100,16 @@ function Handlers(application, database) {
     // Обработка POST запроса с авторизацией для пользователя 
     app.post('/user', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, json_1, json_2, userQuery, result, json_3, json_4, json;
+            var result, request, userQuery, e_3, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, 3, 4]);
                         request = req.body;
-                        try {
-                            // проверяем обязательные поля - login / email && pwd
-                            if (!(request.login || request.email) || !request.pwd) {
-                                json_1 = JSON.stringify("\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u044B \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u043F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u044B \u0432 \u0437\u0430\u043F\u0440\u043E\u0441\u0435");
-                                res.json(json_1);
-                                return [2 /*return*/];
-                            }
-                        }
-                        catch (e) {
-                            json_2 = JSON.stringify("\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043E\u0431\u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u0437\u0430\u043F\u0440\u043E\u0441");
-                            res.json(json_2);
-                            return [2 /*return*/];
+                        // проверяем обязательные поля - login / email && pwd
+                        if (!(request.login || request.email) || !request.pwd) {
+                            res.status(400);
+                            throw "\u041D\u0435 \u0443\u043A\u0430\u0437\u0430\u043D\u044B \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u043F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u044B \u0432 \u0437\u0430\u043F\u0440\u043E\u0441\u0435";
                         }
                         userQuery = queryCreator.findUserQuery(request);
                         return [4 /*yield*/, databaseRequests.findOne("users_list", userQuery)];
@@ -106,19 +117,26 @@ function Handlers(application, database) {
                         result = _a.sent();
                         // если пользователь не найден 
                         if (!result) {
-                            json_3 = JSON.stringify('Пользователь не найден');
-                            res.json(json_3);
-                            return [2 /*return*/];
+                            res.status(404);
+                            throw 'Пользователь не найден';
                         }
                         // проверяем пароль у найденного пользователя и переданный в запросе
                         if (request.pwd !== result.pwd) {
-                            json_4 = JSON.stringify('Неверный пароль');
-                            res.json(json_4);
-                            return [2 /*return*/];
+                            res.status(403);
+                            throw 'Неверный пароль';
                         }
+                        return [3 /*break*/, 4];
+                    case 2:
+                        e_3 = _a.sent();
+                        result = e_3.name || e_3;
+                        if (res.statusCode == 200)
+                            res.status(500);
+                        return [3 /*break*/, 4];
+                    case 3:
                         json = JSON.stringify(result);
                         res.json(json);
-                        return [2 /*return*/];
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -126,28 +144,36 @@ function Handlers(application, database) {
     // Обработка запроса на создание нового пользователя
     app.put('/user', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, userQuery, isNotUnique, json, mongoQuery, result, json;
+            var result, request, userQuery, isNotUnique, mongoQuery, e_4, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 3, 4, 5]);
                         request = req.body;
                         userQuery = queryCreator.findUserQuery(request);
                         return [4 /*yield*/, databaseRequests.findOne("users_list", userQuery)];
                     case 1:
                         isNotUnique = _a.sent();
-                        if (!isNotUnique) return [3 /*break*/, 2];
-                        json = JSON.stringify('Пользователем с таким логином или адресом электронной почты уже зарегистрирован');
-                        res.json(json);
-                        return [3 /*break*/, 4];
-                    case 2:
+                        if (isNotUnique) {
+                            res.status(403);
+                            throw 'Пользователем с таким логином или адресом электронной почты уже зарегистрирован';
+                        }
                         mongoQuery = queryCreator.createNewUserQuery(request);
                         return [4 /*yield*/, databaseRequests.uploadOne("users_list", mongoQuery)];
-                    case 3:
+                    case 2:
                         result = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        e_4 = _a.sent();
+                        result = e_4.name || e_4;
+                        if (res.statusCode == 200)
+                            res.status(500);
+                        return [3 /*break*/, 5];
+                    case 4:
                         json = JSON.stringify(result);
                         res.json(json);
-                        _a.label = 4;
-                    case 4: return [2 /*return*/];
+                        return [7 /*endfinally*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -155,18 +181,27 @@ function Handlers(application, database) {
     // запрос списка поездок с фильтрами
     app.post('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, mongoQuery, result, json;
+            var result, request, mongoQuery, e_5, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, 3, 4]);
                         request = req.body;
                         mongoQuery = queryCreator.findTripQuery(request);
                         return [4 /*yield*/, databaseRequests.findMany("trips", mongoQuery)];
                     case 1:
                         result = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2:
+                        e_5 = _a.sent();
+                        result = e_5.name;
+                        res.status(500);
+                        return [3 /*break*/, 4];
+                    case 3:
                         json = JSON.stringify(result);
                         res.json(json);
-                        return [2 /*return*/];
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -174,27 +209,35 @@ function Handlers(application, database) {
     // создание новой поездки
     app.put('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, isNotUnique, json, mongoQuery, result, json;
+            var result, request, isNotUnique, mongoQuery, e_6, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 3, 4, 5]);
                         request = req.body;
                         return [4 /*yield*/, databaseRequests.findOne("trips", { trip_name: request.trip_name, resort_name: request.resort_name })];
                     case 1:
                         isNotUnique = _a.sent();
-                        if (!isNotUnique) return [3 /*break*/, 2];
-                        json = JSON.stringify('Поездка с таким названием на этот курорт уже существует');
-                        res.json(json);
-                        return [3 /*break*/, 4];
-                    case 2:
+                        if (isNotUnique) {
+                            res.status(403);
+                            throw 'Поездка с таким названием на этот курорт уже существует';
+                        }
                         mongoQuery = queryCreator.createNewTripQuery(request);
                         return [4 /*yield*/, databaseRequests.uploadOne("trips", mongoQuery)];
-                    case 3:
+                    case 2:
                         result = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        e_6 = _a.sent();
+                        result = e_6.name || e_6;
+                        if (res.statusCode == 200)
+                            res.status(500);
+                        return [3 /*break*/, 5];
+                    case 4:
                         json = JSON.stringify(result);
                         res.json(json);
-                        _a.label = 4;
-                    case 4: return [2 /*return*/];
+                        return [7 /*endfinally*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -202,7 +245,7 @@ function Handlers(application, database) {
     // удаление созданной поездки 
     app["delete"]('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, request, trip, e_1;
+            var result, request, trip, e_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -232,9 +275,9 @@ function Handlers(application, database) {
                         result = _a.sent();
                         return [3 /*break*/, 5];
                     case 3:
-                        e_1 = _a.sent();
-                        result = e_1.name || e_1;
-                        if (![400, 403, 404].some(function (code) { return code == res.statusCode; }))
+                        e_7 = _a.sent();
+                        result = e_7.name || e_7;
+                        if (res.statusCode == 200)
                             res.status(500);
                         return [3 /*break*/, 5];
                     case 4:

@@ -18,7 +18,6 @@ client.connect(async function(err) {
     
   // вешаем обработчики на запросы
   new Handlers(app, database);
-
   
   // разворачиваем сервер http
   app.listen(port, () => {

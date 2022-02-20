@@ -43,7 +43,7 @@ var password = 'AXg5xAfbQAHwWMV';
 var databaseName = 'rs_clone';
 var uri = "mongodb+srv://rsclone:".concat(password, "@cluster0.vzj91.mongodb.net/").concat(databaseName, "?retryWrites=true&w=majority");
 var client = new mongodb_1.MongoClient(uri);
-var port = 80;
+var port = process.env.PORT;
 // устанавливаем одно соединение
 client.connect(function (err) {
     return __awaiter(this, void 0, void 0, function () {
@@ -59,12 +59,8 @@ client.connect(function (err) {
                     // вешаем обработчики на запросы
                     new handlers_1["default"](app_1["default"], database);
                     // разворачиваем сервер http
-                    app_1["default"].listen(80, function () {
-                        console.log("Example app listening on port 80!");
-                    });
-                    // разворачиваем сервер https
-                    app_1["default"].listen(443, function () {
-                        console.log("Example app listening on port 443!");
+                    app_1["default"].listen(port, function () {
+                        console.log("Example app listening on port ".concat(port, "!"));
                     });
                     return [2 /*return*/];
             }

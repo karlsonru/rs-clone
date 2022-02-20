@@ -7,7 +7,7 @@ const databaseName: string = 'rs_clone';
 
 const uri = `mongodb+srv://rsclone:${password}@cluster0.vzj91.mongodb.net/${databaseName}?retryWrites=true&w=majority`;
 const client: MongoClient = new MongoClient(uri);
-const port: number = 80;
+const port = process.env.PORT;
 
 // устанавливаем одно соединение
 client.connect(async function(err) {
@@ -19,13 +19,9 @@ client.connect(async function(err) {
   // вешаем обработчики на запросы
   new Handlers(app, database);
 
+  
   // разворачиваем сервер http
-  app.listen(80, () => {
-    console.log(`Example app listening on port 80!`);
-  }); 
-
-  // разворачиваем сервер https
-  app.listen(443, () => {
-    console.log(`Example app listening on port 443!`);
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}!`);
   }); 
 })

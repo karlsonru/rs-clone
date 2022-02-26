@@ -13,7 +13,7 @@
     "allowJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "../",
+    "outDir": "dist",
     /*"strict": true,*/
     /*"declaration": false,*/
     "lib": [

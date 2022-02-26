@@ -14,8 +14,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "../",
-    "strict": true,
-    "declaration": false,
+    /*"strict": true,*/
+    /*"declaration": false,*/
     "lib": [
       "es2021",
       "DOM", 

@@ -100,6 +100,21 @@ export default function Handlers(application, database) {
     }
   });
 
+  app.get('/trips', async function(req, res) {
+    let result;
+    try {
+      const query = req.query;
+      console.log(query);
+      result = await databaseRequests.findMany("trips", query);
+    } catch(e) {
+      result = e.name || e;
+      if (res.statusCode == 200) res.status(500);      
+    } finally {
+      const json = JSON.stringify(result);
+      res.json(json);
+    }
+  })
+
   // запрос списка поездок с фильтрами
   app.post('/trips', async function(req, res): Promise<void> {
     let result;

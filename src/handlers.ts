@@ -38,6 +38,21 @@ export default function Handlers(application, database) {
     }
   });
 
+  // Только для тестирования
+  app.get('/user', async function(req, res): Promise<void> {
+    let result;
+    try {
+      const query = req.query;
+      result = await databaseRequests.findMany("users_list", query);
+    } catch(e) {
+      result = e.name;
+      res.status(500);
+    } finally {
+      const json = JSON.stringify(result);
+      res.json(json);
+    }
+  });
+
   // Обработка POST запроса с авторизацией для пользователя 
   app.post('/user', async function(req, res): Promise<void> {
     let result;

@@ -97,10 +97,36 @@ function Handlers(application, database) {
             });
         });
     });
+    app.get('/user', function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, query, e_3, json;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, 3, 4]);
+                        query = req.query;
+                        return [4 /*yield*/, databaseRequests.findMany("users_list", query)];
+                    case 1:
+                        result = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2:
+                        e_3 = _a.sent();
+                        result = e_3.name;
+                        res.status(500);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        json = JSON.stringify(result);
+                        res.json(json);
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    });
     // Обработка POST запроса с авторизацией для пользователя 
     app.post('/user', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, request, userQuery, e_3, json;
+            var result, request, userQuery, e_4, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -127,8 +153,8 @@ function Handlers(application, database) {
                         }
                         return [3 /*break*/, 4];
                     case 2:
-                        e_3 = _a.sent();
-                        result = e_3.name || e_3;
+                        e_4 = _a.sent();
+                        result = e_4.name || e_4;
                         if (res.statusCode == 200)
                             res.status(500);
                         return [3 /*break*/, 4];
@@ -144,7 +170,7 @@ function Handlers(application, database) {
     // Обработка запроса на создание нового пользователя
     app.put('/user', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, request, userQuery, isNotUnique, mongoQuery, e_4, json;
+            var result, request, userQuery, isNotUnique, mongoQuery, e_5, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -164,8 +190,8 @@ function Handlers(application, database) {
                         result = _a.sent();
                         return [3 /*break*/, 5];
                     case 3:
-                        e_4 = _a.sent();
-                        result = e_4.name || e_4;
+                        e_5 = _a.sent();
+                        result = e_5.name || e_5;
                         if (res.statusCode == 200)
                             res.status(500);
                         return [3 /*break*/, 5];
@@ -180,7 +206,7 @@ function Handlers(application, database) {
     });
     app.get('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, query, e_5, json;
+            var result, query, e_6, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -192,8 +218,8 @@ function Handlers(application, database) {
                         result = _a.sent();
                         return [3 /*break*/, 4];
                     case 2:
-                        e_5 = _a.sent();
-                        result = e_5.name || e_5;
+                        e_6 = _a.sent();
+                        result = e_6.name || e_6;
                         if (res.statusCode == 200)
                             res.status(500);
                         return [3 /*break*/, 4];
@@ -209,7 +235,7 @@ function Handlers(application, database) {
     // запрос списка поездок с фильтрами
     app.post('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, request, mongoQuery, e_6, json;
+            var result, request, mongoQuery, e_7, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -221,8 +247,8 @@ function Handlers(application, database) {
                         result = _a.sent();
                         return [3 /*break*/, 4];
                     case 2:
-                        e_6 = _a.sent();
-                        result = e_6.name;
+                        e_7 = _a.sent();
+                        result = e_7.name;
                         res.status(500);
                         return [3 /*break*/, 4];
                     case 3:
@@ -237,7 +263,7 @@ function Handlers(application, database) {
     // создание новой поездки
     app.put('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, request, isNotUnique, mongoQuery, e_7, json;
+            var result, request, isNotUnique, mongoQuery, e_8, json;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -256,8 +282,8 @@ function Handlers(application, database) {
                         result = _a.sent();
                         return [3 /*break*/, 5];
                     case 3:
-                        e_7 = _a.sent();
-                        result = e_7.name || e_7;
+                        e_8 = _a.sent();
+                        result = e_8.name || e_8;
                         if (res.statusCode == 200)
                             res.status(500);
                         return [3 /*break*/, 5];
@@ -273,7 +299,7 @@ function Handlers(application, database) {
     // удаление созданной поездки 
     app["delete"]('/trips', function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, request, trip, e_8;
+            var result, request, trip, e_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -303,8 +329,8 @@ function Handlers(application, database) {
                         result = _a.sent();
                         return [3 /*break*/, 5];
                     case 3:
-                        e_8 = _a.sent();
-                        result = e_8.name || e_8;
+                        e_9 = _a.sent();
+                        result = e_9.name || e_9;
                         if (res.statusCode == 200)
                             res.status(500);
                         return [3 /*break*/, 5];
